@@ -11,7 +11,6 @@ Start PWstrongbox.exe, the **default password is 1234** but you can change it wi
 Each new site (URL) and Account (ACC) can be added (+), removed (-) using the related buttons. Plus Accounts can also be updated should saved data change.
 
 Here is an example to understand how it works:
-<img src="https://i.imgur.com/ddxcNy3.gif" width="100" height="100" />
-![Alt Text](https://i.imgur.com/ddxcNy3.gif)
+<img src="https://i.imgur.com/ddxcNy3.gif" width="986" height="485" />
 
 NOTE: remember that for the proper functioning of PWstrongbox it is necessary for JRE to be present in the environment of your operative system.
