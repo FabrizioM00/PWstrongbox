@@ -12,5 +12,6 @@ Each new site (URL) and Account (ACC) can be added (+), removed (-) using the re
 
 Here is an example to understand how it works:
 <img src="https://i.imgur.com/ddxcNy3.gif" width="986" height="485" />
+![Alt Text](https://i.imgur.com/ddxcNy3.gif)
 
 NOTE: remember that for the proper functioning of PWstrongbox it is necessary for JRE to be present in the environment of your operative system.
