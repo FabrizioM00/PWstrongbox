@@ -1,8 +1,6 @@
 package com.example.gui.access;
 
 import com.example.model.Acc;
-import com.formdev.flatlaf.FlatDarkLaf;
-import org.springframework.ui.Model;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

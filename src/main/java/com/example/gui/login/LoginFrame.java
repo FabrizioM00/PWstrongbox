@@ -44,6 +44,7 @@ public class LoginFrame extends JFrame {
             public void azione(String text) {
                 try {
                     if(ms.toDecrypt(text)) { // decrypting data...
+                        text = null;
                         accessFrame.setVisible(true); // make AccessFrame visible
                         dispose(); //closing LoginFrame
                     } else {

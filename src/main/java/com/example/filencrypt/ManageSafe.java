@@ -28,22 +28,23 @@ public class ManageSafe {
 
     private List<WebData> data;
     private String jsonStr = "[]";
-    private File contentDataFile = new File(System.getProperty("user.dir"), "file2"); // contentdata
+    private File contentDataFile = new File(System.getProperty("user.dir"), "data"); // contentdata
 
-    private String myPwd;
+    private SecretKey sk;
 
     public ManageSafe() {
         if(!contentDataFile.exists()) {
             try {
                 contentDataFile.createNewFile();
-                myPwd = "1234";
-                toEncrypt(myPwd);
+                sk = genSKFromPwd("1234");
+                toEncrypt(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
+    // crea hash da 256 bit (32 byte) basato su una password con l'algoritmo Advanced Encryption Standard
     public SecretKey genSKFromPwd(String pwd) throws InvalidKeySpecException, NoSuchAlgorithmException {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         byte[] salt = {-71, -33, 110, 124, 83, 90, 66, -25};
@@ -52,10 +53,13 @@ public class ManageSafe {
         return new SecretKeySpec(tmp.getEncoded(), "AES");
     }
 
-    public void toEncrypt(String editPw) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
+    public void toEncrypt(SecretKey secretKey) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
+        if(sk == null || secretKey != null) {
+            sk = secretKey;
+        } else {
+            secretKey = sk;
+        }
 
-        // genera chiave complessa da 256 bit (32 byte) con l'algoritmo Advanced Encryption Standard
-        SecretKey secretKey = genSKFromPwd(editPw);
         // cripta il file utilizzando la chiave
         FileEncrypterDecrypter fileEncrypterDecrypter
                 = new FileEncrypterDecrypter(secretKey, "AES/CBC/PKCS5Padding");
@@ -74,8 +78,8 @@ public class ManageSafe {
         } catch (IOException | InvalidKeyException e) {
             return false;
         }
-        // se la pwd inserita in login è corretta setto in memoria la mia pwd funzionante attuale
-        myPwd = loginStr;
+        // se la pwd inserita in login è corretta setto in memoria la secretkey funzionante attuale
+        sk = originalKey;
         // converto il mio json file decriptato in oggetti java di WebData
         ObjectMapper objectMapper = new ObjectMapper();
         List<WebData> webDatas = objectMapper.readValue(decryptedContent, new TypeReference<List<WebData>>(){});
@@ -135,7 +139,7 @@ public class ManageSafe {
         }
         data.add(new WebData(domain));
         setNewDataIntoJsonStr(data);
-        toEncrypt(myPwd);
+        toEncrypt(sk);
         return data.size()-1;
     }
 
@@ -144,7 +148,7 @@ public class ManageSafe {
             if(wb.getWebsiteUrl().equals(websiteToRemove)) {
                 data.remove(wb);
                 setNewDataIntoJsonStr(data);
-                toEncrypt(myPwd);
+                toEncrypt(sk);
                 return;
             }
         }
@@ -155,7 +159,7 @@ public class ManageSafe {
             data.removeIf(wb -> wb.getWebsiteUrl().equals(str));
         }
         setNewDataIntoJsonStr(data);
-        toEncrypt(myPwd);
+        toEncrypt(sk);
     }
 
     public void addAccToSite(String websiteName, String username, String email, String pw) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
@@ -163,7 +167,7 @@ public class ManageSafe {
             if(wb.getWebsiteUrl().equals(websiteName)) {
                 wb.getAccs().add(new Acc(username, email, pw));
                 setNewDataIntoJsonStr(data);
-                toEncrypt(myPwd);
+                toEncrypt(sk);
                 return;
             }
         }
@@ -172,14 +176,14 @@ public class ManageSafe {
     public void removeAccFromSite(int row, String website) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
         getAccsByWebsiteUrl(website).remove(row);
         setNewDataIntoJsonStr(data);
-        toEncrypt(myPwd);
+        toEncrypt(sk);
     }
 
-    public String getMyPwd() {
-        return myPwd;
+    public SecretKey getSk() {
+        return sk;
     }
 
-    public void setMyPwd(String myPwd) {
-        this.myPwd = myPwd;
+    public void setSk(SecretKey sk) {
+        this.sk = sk;
     }
 }

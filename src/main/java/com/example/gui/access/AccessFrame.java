@@ -6,9 +6,6 @@ import com.example.model.Acc;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,7 +13,6 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 
 public class AccessFrame extends JFrame {
 
@@ -86,7 +82,8 @@ public class AccessFrame extends JFrame {
                                         "Warning",
                                         JOptionPane.WARNING_MESSAGE);
                             } else {
-                                manageSafe.toEncrypt(newPw);
+                                manageSafe.toEncrypt(manageSafe.genSKFromPwd(newPw));
+                                newPw = null;
                                 JOptionPane.showMessageDialog(frame, "Password has been changed!");
                             }
                         }
@@ -315,7 +312,7 @@ public class AccessFrame extends JFrame {
                         manageSafe.getAccsByWebsiteUrl(selectedWebsite).set(row, new Acc(values[0], values[1], values[2]));
                     }
                     manageSafe.setNewDataIntoJsonStr(manageSafe.getData());
-                    manageSafe.toEncrypt(manageSafe.getMyPwd());
+                    manageSafe.toEncrypt(manageSafe.getSk());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(frame,
