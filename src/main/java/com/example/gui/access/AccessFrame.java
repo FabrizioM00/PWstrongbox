@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
 public class AccessFrame extends JFrame {
@@ -85,11 +86,11 @@ public class AccessFrame extends JFrame {
                                         "Warning",
                                         JOptionPane.WARNING_MESSAGE);
                             } else {
-                                manageSafe.genNewPw(newPw);
+                                manageSafe.toEncrypt(newPw);
                                 JOptionPane.showMessageDialog(frame, "Password has been changed!");
                             }
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else if (num == 3) { // 3 = bottone ADD ACC
@@ -205,8 +206,8 @@ public class AccessFrame extends JFrame {
                                         "Invalid URL",
                                         "Warning",
                                         JOptionPane.WARNING_MESSAGE);
-                            } catch (NoSuchPaddingException | IOException |
-                                    NoSuchAlgorithmException | InvalidKeyException e1) {
+                            } catch (NoSuchPaddingException | IOException | NoSuchAlgorithmException |
+                                     InvalidKeyException | InvalidKeySpecException e1) {
                                 JOptionPane.showMessageDialog(frame,
                                         "FAILED TO SAVE THE URL",
                                         "BAD ERROR",
@@ -314,7 +315,7 @@ public class AccessFrame extends JFrame {
                         manageSafe.getAccsByWebsiteUrl(selectedWebsite).set(row, new Acc(values[0], values[1], values[2]));
                     }
                     manageSafe.setNewDataIntoJsonStr(manageSafe.getData());
-                    manageSafe.toEncrypt();
+                    manageSafe.toEncrypt(manageSafe.getMyPwd());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(frame,

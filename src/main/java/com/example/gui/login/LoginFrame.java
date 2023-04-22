@@ -43,8 +43,7 @@ public class LoginFrame extends JFrame {
             @Override
             public void azione(String text) {
                 try {
-                    if(accessFrame.getManageSafe().checkPw(text)) {
-                        ms.toDecrypt(); // decrypting data...
+                    if(ms.toDecrypt(text)) { // decrypting data...
                         accessFrame.setVisible(true); // make AccessFrame visible
                         dispose(); //closing LoginFrame
                     } else {
